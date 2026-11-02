@@ -10,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 // to this Windows account; app identity remains stable across folder changes.
 var protection = builder.Services.AddDataProtection()
     .SetApplicationName("OYA.Web.Application");
-if (OperatingSystem.IsWindows())
+// IIS uses the framework default key storage for its worker identity.
+// Interactive Windows launches keep the existing per-user protected key store.
+var hostedInIis = string.Equals(System.Diagnostics.Process.GetCurrentProcess().ProcessName,
+    "w3wp", StringComparison.OrdinalIgnoreCase)
+    || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_IIS_PHYSICAL_PATH"))
+    || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ASPNETCORE_TOKEN"));
+if (OperatingSystem.IsWindows() && !hostedInIis)
 {
     var stateDirectory = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),

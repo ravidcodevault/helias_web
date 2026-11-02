@@ -14,3 +14,5 @@ Backend artifacts contain empty runtime values. On HeliasLLC only, publishing me
 
 Only pushes to this repository's main branch and manual main-branch runs can use the publish runner. Pull requests never run on the destination.
 The older .disabled workflows are historical references and remain disabled.
+
+IIS hosting uses the framework default Data Protection key discovery for the worker identity; interactive launches retain per-user DPAPI persistence. PubNub keys remain private runtime configuration and must match the backend. Azure credentials must be valid before production sign-in testing.
