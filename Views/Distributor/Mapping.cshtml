@@ -1,0 +1,227 @@
+﻿@model List<OYA_Web_Application.Models.DistributorModel>
+
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+    <div class="app-container container-fluid d-flex flex-stack">
+        <h1 class="fw-bold fs-3">Template Mapping</h1>
+    </div>
+</div>
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div class="app-container container-fluid">
+
+        <!-- TABS -->
+
+        <ul class="nav nav-tabs mb-5">
+            <li class="nav-item"><button class="nav-link active" onclick="showTab('Main', this)">Main</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showTab('West', this)">West</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showTab('East', this)">East</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showTab('Central', this)">Central</button></li>
+            <li class="nav-item"><button class="nav-link" onclick="showTab('International', this)">International</button></li>
+        </ul>
+
+        <!-- MAIN -->
+
+        <div id="MainSection" class="template-section">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4>Main Mapping</h4>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('main')">+ Add</button>
+                    </div>
+
+                    
+                    <table class="table table-bordered">
+                        <thead><tr><th>Distributor</th><th>Row</th></tr></thead>
+                        <tbody>
+                            @foreach (var d in Model.Where(x => x.Row > 0).OrderBy(x => x.Row))
+                            {
+                                <tr>
+                                    <td>@d.Customer</td>
+                                    <td>@d.Row</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <!-- WEST -->
+
+        <div id="WestSection" class="template-section d-none">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4>West Mapping</h4>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('west')">+ Add</button>
+                    </div>
+
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            @foreach (var d in Model.Where(x => x.WestRow > 0).OrderBy(x => x.WestRow))
+                            {
+                                <tr><td>@d.Customer</td><td>@d.WestRow</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <!-- EAST -->
+
+        <div id="EastSection" class="template-section d-none">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4>East Mapping</h4>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('east')">+ Add</button>
+                    </div>
+
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            @foreach (var d in Model.Where(x => x.EastRow > 0).OrderBy(x => x.EastRow))
+                            {
+                                <tr><td>@d.Customer</td><td>@d.EastRow</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <!-- CENTRAL -->
+
+        <div id="CentralSection" class="template-section d-none">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4>Central Mapping</h4>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('central')">+ Add</button>
+                    </div>
+
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            @foreach (var d in Model.Where(x => x.CentralRow > 0).OrderBy(x => x.CentralRow))
+                            {
+                                <tr><td>@d.Customer</td><td>@d.CentralRow</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        </div>
+
+        <!-- INTERNATIONAL -->
+
+        <div id="InternationalSection" class="template-section d-none">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h4>International Mapping</h4>
+                        <button class="btn btn-primary btn-sm" onclick="openAddModal('intl')">+ Add</button>
+                    </div>
+
+                    
+                    <table class="table table-bordered">
+                        <tbody>
+                            @foreach (var d in Model.Where(x => x.InternationalRow > 0).OrderBy(x => x.InternationalRow))
+                            {
+                                <tr><td>@d.Customer</td><td>@d.InternationalRow</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal fade" id="addModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header"><h5>Add Mapping</h5></div>
+            <div class="modal-body">
+                <input type="hidden" id="mapType" />
+
+                
+                <select id="mapCustomer" class="form-select mb-3">
+                    @foreach (var d in Model)
+                    {
+                        <option value="@d.Customer">@d.Customer</option>
+                    }
+                </select>
+
+                <input type="number" id="mapRow" class="form-control" placeholder="Enter Row" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="saveNewMapping()">Save</button>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        let modal;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            modal = new bootstrap.Modal(document.getElementById('addModal'));
+        });
+
+        function showTab(tab, el){
+            document.querySelectorAll('.nav-link').forEach(x=>x.classList.remove('active'));
+            el.classList.add('active');
+
+            document.querySelectorAll('.template-section').forEach(x=>x.classList.add('d-none'));
+            document.getElementById(tab+'Section').classList.remove('d-none');
+        }
+
+        function openAddModal(type){
+            document.getElementById("mapType").value = type;
+            document.getElementById("mapRow").value = "";
+            modal.show();
+        }
+
+        function saveNewMapping(){
+
+            let type = document.getElementById("mapType").value;
+            let customer = document.getElementById("mapCustomer").value;
+            let row = parseInt(document.getElementById("mapRow").value);
+
+            if(!row){
+                alert("Row required");
+                return;
+            }
+
+            fetch('/Distributor/AddMapping',{
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({Customer:customer,Type:type,Row:row})
+            })
+            .then(()=>location.reload());
+        }
+
+    </script>
+
+}

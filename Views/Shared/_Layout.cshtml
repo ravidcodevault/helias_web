@@ -1,0 +1,146 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor;
+
+@{
+    var userName = "";
+    try
+    {
+        userName = Convert.ToString(HttpContextAccessor.HttpContext.Session.GetString("_Name"));
+    }
+    catch { }
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
+
+    <!-- Vendor CSS -->
+    <link href="~/assets/plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" />
+
+    <!-- Global CSS -->
+    <link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" />
+    <link href="~/assets/css/style.bundle.css" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+
+</head>
+
+<body id="kt_app_body"
+      class="app-default"
+      data-kt-app-layout="dark-sidebar"
+      data-kt-app-sidebar-enabled="true"
+      data-kt-app-sidebar-fixed="true"
+      data-kt-app-header-fixed="false">
+
+    
+    <div class="d-flex flex-column flex-root app-root" id="kt_app_root">
+
+        <div class="app-page flex-column flex-column-fluid" id="kt_app_page">
+
+            <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+
+                <!-- SIDEBAR -->
+                <div id="kt_app_sidebar" class="app-sidebar flex-column">
+
+                    <!-- LOGO -->
+                    <div class="app-sidebar-logo px-6 py-4">
+                        <div class="d-flex align-items-center">
+                            <img src="https://c24a97d302fa96ccfcde-52bed1c7385b649a062ae0a69321550a.ssl.cf2.rackcdn.com/Original/11851043_24533_$2014_10_08_12_20_22_5777.png"
+                                 class="h-30px me-3" />
+                            <div>
+                                <div class="fw-bold text-white">Helias LLC</div>
+                                <div class="text-muted fs-7">Workspace</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MENU -->
+                    <div class="app-sidebar-menu flex-column-fluid">
+                        <div class="app-sidebar-wrapper">
+                            <div class="menu menu-column menu-rounded fw-semibold fs-6">
+
+                                <div class="menu-item">
+                                    <a class="menu-link" href="/Home/Dashboard">
+                                        <span class="menu-icon"><i class="fa fa-tachometer"></i></span>
+                                        <span class="menu-title">Dashboard</span>
+                                    </a>
+                                </div>
+
+                                <div class="menu-item">
+                                    <a class="menu-link" href="/Home/Reports">
+                                        <span class="menu-icon"><i class="fa fa-list-alt"></i></span>
+                                        <span class="menu-title">Reports</span>
+                                    </a>
+                                </div>
+
+                                <div class="menu-item">
+                                    <a class="menu-link" href="/Home/Sync">
+                                        <span class="menu-icon"><i class="fa fa-refresh"></i></span>
+                                        <span class="menu-title">Sync Status</span>
+                                    </a>
+                                </div>
+
+                             @*    <div class="menu-item">
+                                    <a class="menu-link" href="/Distributor/Index">
+                                        <span class="menu-icon"><i class="fa fa-users"></i></span>
+                                        <span class="menu-title">Distributor Master</span>
+                                    </a>
+                                </div> *@
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER -->
+                    <div class="app-sidebar-footer d-flex flex-stack px-6 py-4">
+
+                        <div class="text-white">
+                            <i class="fa fa-user-circle me-2"></i> @userName
+                        </div>
+
+                        <a href="/authentication/logout" class="btn btn-sm btn-light">
+                            Logout
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <!-- MAIN -->
+                <div class="app-main flex-column flex-row-fluid">
+
+                    <!-- CONTENT (FIXED STRUCTURE) -->
+                    <div id="kt_app_content" class="app-content flex-column-fluid">
+
+                        <div class="app-container container-fluid">
+
+                            @RenderBody()
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="~/assets/plugins/global/plugins.bundle.js"></script>
+    <script src="~/assets/plugins/custom/datatables/datatables.bundle.js"></script>
+    <script src="~/assets/js/scripts.bundle.js"></script>
+
+    @RenderSection("Scripts", required: false)
+    
+
+</body>
+</html>

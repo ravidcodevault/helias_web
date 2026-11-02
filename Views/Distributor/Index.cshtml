@@ -1,0 +1,200 @@
+﻿@model List<DistributorModel>
+
+@{
+    ViewData["Title"] = "Distributor Master";
+}
+
+<div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
+    <div class="app-container container-fluid d-flex flex-stack">
+
+        
+        <div class="page-title d-flex flex-column justify-content-center me-3">
+            <h1 class="page-heading text-gray-900 fw-bold fs-3">Distributor Master</h1>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+            <input type="text" id="searchBox" class="form-control form-control-sm w-auto" placeholder="Search..." onkeyup="filterTable()" />
+
+            <a href="/distributor/mapping" class="btn btn-primary btn-sm">
+                Mapping
+            </a>
+
+            <button type="button" class="btn btn-primary btn-sm" onclick="openAddModal()">
+                + Add Distributor
+            </button>
+        </div>
+
+    </div>
+    
+
+</div>
+
+<div id="kt_app_content" class="app-content flex-column-fluid">
+    <div class="app-container container-fluid">
+
+        
+        <div class="card">
+            <div class="card-body">
+
+                <div class="table-responsive">
+                    <table class="table table-row-bordered table-row-gray-300 align-middle" id="distributorTable">
+                        <thead>
+                            <tr class="fw-bold text-muted bg-light">
+                                <th>Customer</th>
+                                <th>Name</th>
+                                <th>Region</th>
+                                <th>Territory</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var d in Model)
+                                {
+                                    <tr>
+                                        <td>@d.Customer</td>
+                                        <td>@d.Name</td>
+                                        <td>@d.Region</td>
+                                        <td>@d.Territory</td>
+                                        <td>
+                                            <span class="badge badge-light-success">Active</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <button class="btn btn-sm btn-light-primary"
+                                                    onclick='editDistributor(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(d)))'>
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No data found</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    
+
+</div>
+
+<!-- Modal -->
+
+<div class="modal fade" id="distributorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            
+            <div class="modal-header">
+                <h5 class="modal-title">Distributor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label class="form-label">Customer</label>
+                    <input id="Customer" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input id="Name" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Region</label>
+                    <input id="Region" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Territory</label>
+                    <input id="Territory" class="form-control" />
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="saveDistributor()">Save</button>
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+    
+
+</div>
+
+@section Scripts {
+
+    <script>
+
+        let modal;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            modal = new bootstrap.Modal(document.getElementById('distributorModal'));
+        });
+
+        function openAddModal() {
+            clearForm();
+            modal.show();
+        }
+
+        function editDistributor(data) {
+            document.getElementById("Customer").value = data.Customer;
+            document.getElementById("Name").value = data.Name;
+            document.getElementById("Region").value = data.Region;
+            document.getElementById("Territory").value = data.Territory;
+
+            modal.show();
+        }
+
+        function clearForm() {
+            document.querySelectorAll("#distributorModal input").forEach(x => x.value = "");
+        }
+
+        function saveDistributor() {
+
+            let data = {
+                Customer: document.getElementById("Customer").value,
+                Name: document.getElementById("Name").value,
+                Region: document.getElementById("Region").value,
+                Territory: document.getElementById("Territory").value
+            };
+
+            if (!data.Customer) {
+                alert("Customer is required");
+                return;
+            }
+
+            fetch('/Distributor/SaveMaster', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(() => location.reload());
+        }
+
+        function filterTable() {
+            let input = document.getElementById("searchBox").value.toLowerCase();
+            let rows = document.querySelectorAll("#distributorTable tbody tr");
+
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+            });
+        }
+
+    </script>
+
+}

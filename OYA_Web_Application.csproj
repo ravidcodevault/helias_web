@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <UserSecretsId>OyaWebApplication-Downloads</UserSecretsId>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Identity" Version="1.12.0" />
+    <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.6.0" />
+    <PackageReference Include="GemBox.Spreadsheet" Version="49.0.1839" />
+    <PackageReference Include="IppDotNetSdkForQuickBooksApiV3" Version="14.6.4" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
+    <PackageReference Include="pubnub" Version="7.0.0" />
+    <PackageReference Include="System.Data.Odbc" Version="8.0.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.DirectoryServices.Protocols" Version="9.0.0-preview.3.24172.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="deployment\RUN-OYA.ps1" CopyToPublishDirectory="PreserveNewest" TargetPath="RUN-OYA.ps1" />
+    <Content Include="deployment\RUN-OYA.cmd" CopyToPublishDirectory="PreserveNewest" TargetPath="RUN-OYA.cmd" />
+    <Content Include="deployment\READ-ME-FIRST.txt" CopyToPublishDirectory="PreserveNewest" TargetPath="READ-ME-FIRST.txt" />
+  </ItemGroup>
+</Project>

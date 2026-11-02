@@ -1,0 +1,153 @@
+﻿@{
+	ViewBag.HeaderText = "Header text from the view";
+}
+
+<div id="kt_app_toolbar" class="app-toolbar  py-3 py-lg-6 ">
+	<div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
+		<div class="page-title d-flex flex-column justify-content-center flex-wrap me-3 ">
+			<h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+				Quickbook to Database Sync Logs
+			</h1>
+			<!--end::Title-->
+			<!--begin::Breadcrumb-->
+			<ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+				<!--begin::Item-->
+				<li class="breadcrumb-item text-muted">
+					<a href="#"
+					   class="text-muted text-hover-primary">
+						Home
+					</a>
+				</li>
+				<!--end::Item-->
+				<!--begin::Item-->
+				<li class="breadcrumb-item">
+					<span class="bullet bg-gray-500 w-5px h-2px"></span>
+				</li>
+				<!--end::Item-->
+				<!--begin::Item-->
+				<li class="breadcrumb-item text-muted">
+					Scheduler Logs
+				</li>
+				<!--end::Item-->
+
+			</ul>
+			<!--end::Breadcrumb-->
+		</div>
+		<!--end::Page title-->
+		<!--begin::Actions-->
+		<!--end::Actions-->
+	</div>
+	<!--end::Toolbar container-->
+</div>
+<div id="kt_app_content" class="app-content  flex-column-fluid ">
+	<div id="kt_app_content_container" class="app-container " style="max-width:90%">
+		<div class="card mb-5 mb-lg-10">
+			<div class="card-header">
+				<div class="card-title"></div>
+				<div class="card-toolbar">
+					<a href="#" class="btn btn-sm btn-primary my-1">
+						Sync Now
+					</a>
+				</div>
+			</div>
+			<div class="card-body p-0">
+				<div class="table-responsive">
+					<table class="table align-middle table-row-bordered table-row-solid gy-4 gs-9">
+						<thead class="border-gray-200 fs-5 fw-semibold bg-lighten">
+							<tr>
+								<th class="min-w-100px">Sync DateTime</th>
+								<th class="min-w-100px">Status</th>
+								<th class="min-w-150px">Mode</th>
+								@*<th class="min-w-150px">IP Address</th>*@
+								@*<th class="min-w-150px">Time</th>*@
+							</tr>
+						</thead>
+						<tbody class="fw-6 fw-semibold text-gray-600">
+							<tr>
+								<td>
+									<a href="#" class="text-hover-primary text-gray-600">@DateTime.Now.AddMinutes(-500)</a>
+								</td>
+
+								<td>
+									<span class="badge badge-light-warning fs-7 fw-bold">Running</span>
+								</td>
+
+								<td>Manual</td>
+
+								@*<td>236.125.56.78</td>
+
+								<td>2 mins ago</td>*@
+							</tr>
+							<tr>
+								<td>
+									<a href="#" class="text-hover-primary text-gray-600">@DateTime.Now.AddDays(-3).AddMinutes(-300)</a>
+								</td>
+
+								<td>
+									<span class="badge badge-light-success fs-7 fw-bold">Completed</span>
+								</td>
+
+								<td>Scheduler</td>
+
+								@*<td>236.125.56.78</td>
+
+								<td>10 mins ago</td>*@
+							</tr>
+							<tr>
+								<td>
+									<a href="#" class="text-hover-primary text-gray-600">@DateTime.Now.AddDays(-4).AddMinutes(-900)</a>
+								</td>
+
+								<td>
+									<span class="badge badge-light-danger fs-7 fw-bold">Failed</span>
+								</td>
+
+								<td>Scheduler</td>
+
+								@*	<td>236.125.56.10</td>
+
+								<td>20 mins ago</td>*@
+							</tr>
+							<tr>
+								<td>
+									<a href="#" class="text-hover-primary text-gray-600">@DateTime.Now.AddDays(-5).AddMinutes(-100)</a>
+								</td>
+
+								<td>
+									<span class="badge badge-light-success fs-7 fw-bold">Completed</span>
+								</td>
+
+								<td>Scheduler</td>
+
+								@*		<td>236.125.56.54</td>
+
+								<td>30 mins ago</td>*@
+							</tr>
+							<tr>
+								<td>
+									<a href="#" class="text-hover-primary text-gray-600">@DateTime.Now.AddDays(-6)</a>
+								</td>
+
+								<td>
+									<span class="badge badge-light-success fs-7 fw-bold">Completed</span>
+								</td>
+
+								<td>Scheduler</td>
+								@*
+								<td>236.100.56.50</td>
+
+								<td>40 mins ago</td>*@
+							</tr>
+
+						</tbody>
+						<!--end::Tbody-->
+					</table>
+					<!--end::Table-->
+				</div>
+				<!--end::Table wrapper-->
+			</div>
+			<!--end::Card body-->
+		</div>
+	</div>
+</div>
+<!--end::Login sessions-->

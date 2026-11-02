@@ -1,0 +1,416 @@
+﻿@model OYA_Web_Application.Models.Data.Dashboard.DashboardSales
+@{
+    var dataList = ViewBag.Contractors as List<OYA_Web_Application.Models.Data.Reports.Contractor>;
+}
+<style>
+    .stepperActiveClass {
+        color: #1b84ff !important
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .visible {
+        display: block !important;
+    }
+</style>
+<script>
+    function changeReportView(reportId) {
+
+        document.getElementById("HeliasDailyReport").style.setProperty('display', 'none', 'important');
+        document.getElementById("TerritorySalesReport").style.setProperty('display', 'none', 'important');
+        document.getElementById("OyaAgingReport").style.setProperty('display', 'none', 'important');
+        document.getElementById("PinoAgingReport").style.setProperty('display', 'none', 'important');
+        document.getElementById("CommisionReport").style.setProperty('display', 'none', 'important');
+
+        // var element = document.getElementById(reportId);
+        var element = document.getElementById(reportId);
+        if (element) {
+            element.style.setProperty('display', 'block', 'important');
+        }
+        // $('#'+reportId).hide();
+    }
+</script>
+
+<div id="kt_app_toolbar" class="app-toolbar  py-3 py-lg-6 ">
+    <div id="kt_app_toolbar_container" class="app-container  container-fluid d-flex flex-stack ">
+        <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3 ">
+            <h1 class="page-heading d-flex text-gray-900 fw-bold fs-3 flex-column justify-content-center my-0">
+                Reports
+            </h1>
+            <!--end::Title-->
+            <!--begin::Breadcrumb-->
+            <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">
+                    <a href="#"
+                       class="text-muted text-hover-primary">
+                        Home
+                    </a>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item">
+                    <span class="bullet bg-gray-500 w-5px h-2px"></span>
+                </li>
+                <!--end::Item-->
+                <!--begin::Item-->
+                <li class="breadcrumb-item text-muted">
+                    Reports
+                </li>
+                <!--end::Item-->
+
+            </ul>
+            <!--end::Breadcrumb-->
+        </div>
+        <!--end::Page title-->
+        <!--begin::Actions-->
+        <!--end::Actions-->
+    </div>
+    <!--end::Toolbar container-->
+</div>
+
+<div id="kt_app_content" class="app-content  flex-column-fluid ">
+    <div id="kt_app_content_container" class="app-container  container-fluid">
+        <div class="card card-xxl-stretch mb-5 mb-xl-10">
+            <div class="card-header card-header-stretch">
+                <!--begin::Title-->
+                <div class="card-title">
+                    <h3 class="m-0 text-gray-900">Helias Daily Sales</h3>
+                </div>
+            </div>
+            <div class="card-body pt-7 pb-0 px-0">
+                <!--begin::Tab content-->
+                <div class="tab-content">
+                    <!--begin::Tab panel-->
+                    <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                        <!--begin::Row-->
+                        <div class="row p-0 mb-5 px-9">
+                            <!--begin::Col-->
+                            <div class="col">
+                                <div class="border border-dashed border-gray-300 text-center min-w-125px rounded pt-4 pb-2 my-3">
+                                    <span class="fs-4 fw-semibold text-success d-block">Overall Sales</span>
+                                    <span class="fs-2hx fw-bold text-gray-900" data-kt-countup="true">@Model.TotalAmountOverallOya</span>
+                                </div>
+                            </div>
+                            <!--end::Col-->
+                            <!--begin::Col-->
+                            <div class="col">
+                                <div class="border border-dashed border-gray-300 text-center min-w-125px rounded pt-4 pb-2 my-3">
+                                    <span class="fs-4 fw-semibold text-primary d-block">OYA Sales</span>
+                                    <span class="fs-2hx fw-bold text-gray-900" data-kt-countup="true">@Model.OYA_This_Month_Sales</span>
+                                </div>
+                            </div>
+                            <!--end::Col-->
+                            <!--begin::Col-->
+                            <div class="col">
+                                <div class="border border-dashed border-gray-300 text-center min-w-125px rounded pt-4 pb-2 my-3">
+                                    <span class="fs-4 fw-semibold text-danger d-block">Pino Sales</span>
+                                    <span class="fs-2hx fw-bold text-gray-900" data-kt-countup="true">@Model.Pino_This_Month_Sales</span>
+                                </div>
+                            </div>
+                            <!--end::Col-->
+                        </div>
+                        <!--end::Row-->
+                        @* <div class="card-px text-center my-10">
+                        <!--begin::Title-->
+                        <h2 class="fs-2x fw-bold mb-10">Download Daily Helias Sales Report</h2>
+                        <!--end::Title-->
+                        <!--begin::Description-->
+                        <!--end::Description-->
+                        <!--begin::Action-->
+                        <a href="/Home/DownloadReport" class="btn btn-primary">Download</a>
+                        <!--end::Action-->
+                        </div> *@
+                    </div>
+                </div>
+                <!--end::Tab content-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="kt_app_content" class="app-content  flex-column-fluid">
+    <div id="kt_app_content_container" class="app-container  container-fluid ">
+        <div class="stepper stepper-pills stepper-column d-flex flex-column flex-xl-row flex-row-fluid gap-10" id="kt_create_account_stepper" data-kt-stepper="true">
+            <!--begin::Aside-->
+            <div class="card d-flex justify-content-center justify-content-xl-start flex-row-auto w-100 w-xl-300px w-xxl-400px">
+                <!--begin::Wrapper-->
+                <div class="card-body px-6 px-lg-10 px-xxl-15 py-20">
+                    <!--begin::Nav-->
+                    <div class="stepper-nav">
+                        <!--begin::Step 1-->
+                        <div class="stepper-item current" data-kt-stepper-element="nav">
+                            <!--begin::Wrapper-->
+                            <div class="stepper-wrapper">
+                                <!--begin::Icon-->
+                                <div class="stepper-icon w-40px h-40px">
+                                    <i class="ki-outline ki-check fs-2 stepper-check"></i>
+                                    <span class="stepper-number">1</span>
+                                </div>
+                                <!--end::Icon-->
+                                <!--begin::Label-->
+                                <div class="stepper-label">
+                                    <a href="javascript:changeReportView('HeliasDailyReport')">
+                                        <h3 class="stepper-title">
+                                            Helias Daily Report
+                                        </h3>
+                                        <div class="stepper-desc fw-semibold">
+                                            Daily sales report
+                                        </div>
+                                    </a>
+                                </div>
+                                <!--end::Label-->
+                            </div>
+                            <!--end::Wrapper-->
+                            <!--begin::Line-->
+                            <div class="stepper-line h-40px"></div>
+                            <!--end::Line-->
+                        </div>
+                        <!--end::Step 1-->
+                        <!--begin::Step 2-->
+                        <div class="stepper-item" data-kt-stepper-element="nav">
+                            <!--begin::Wrapper-->
+                            <div class="stepper-wrapper">
+                                <!--begin::Icon-->
+                                <div class="stepper-icon w-40px h-40px">
+                                    <i class="ki-outline ki-check fs-2 stepper-check"></i>
+                                    <span class="stepper-number">2</span>
+                                </div>
+                                <!--end::Icon-->
+                                <!--begin::Label-->
+                                <div class="stepper-label">
+                                    <a href="javascript:changeReportView('TerritorySalesReport')">
+                                        <h3 class="stepper-title">
+                                            OYA Territory Sales Reports
+                                        </h3>
+                                        <div class="stepper-desc fw-semibold">
+                                            Sales by territory
+                                        </div>
+                                    </a>
+                                </div>
+                                <!--end::Label-->
+                            </div>
+                            <!--end::Wrapper-->
+                            <!--begin::Line-->
+                            <div class="stepper-line h-40px"></div>
+                            <!--end::Line-->
+                        </div>
+                        <!--end::Step 2-->
+                        <!--begin::Step 3-->
+                        <div class="stepper-item" data-kt-stepper-element="nav">
+                            <!--begin::Wrapper-->
+                            <div class="stepper-wrapper">
+                                <!--begin::Icon-->
+                                <div class="stepper-icon w-40px h-40px">
+                                    <i class="ki-outline ki-check fs-2 stepper-check"></i>
+                                    <span class="stepper-number">3</span>
+                                </div>
+                                <!--end::Icon-->
+                                <!--begin::Label-->
+                                <div class="stepper-label">
+                                    <a href="javascript:changeReportView('OyaAgingReport')">
+                                        <h3 class="stepper-title">
+                                            OYA Aging Report
+                                        </h3>
+                                        <div class="stepper-desc fw-semibold">
+                                            OYA Aging detail and Summary report
+                                        </div>
+                                    </a>
+                                </div>
+                                <!--end::Label-->
+                            </div>
+                            <!--end::Wrapper-->
+                            <!--begin::Line-->
+                            <div class="stepper-line h-40px"></div>
+                            <!--end::Line-->
+                        </div>
+                        <!--end::Step 3-->
+                        <!--begin::Step 4-->
+                        <div class="stepper-item" data-kt-stepper-element="nav">
+                            <!--begin::Wrapper-->
+                            <div class="stepper-wrapper">
+                                <!--begin::Icon-->
+                                <div class="stepper-icon w-40px h-40px">
+                                    <i class="ki-outline ki-check fs-2 stepper-check"></i>
+                                    <span class="stepper-number">4</span>
+                                </div>
+                                <!--end::Icon-->
+                                <!--begin::Label-->
+                                <div class="stepper-label">
+                                    <a href="javascript:changeReportView('PinoAgingReport')">
+                                        <h3 class="stepper-title">
+                                            Pino Aging Report
+                                        </h3>
+                                        <div class="stepper-desc fw-semibold">
+                                            Pino Aging detail and Summary report
+                                        </div>
+                                    </a>
+                                </div>
+                                <!--end::Label-->
+                            </div>
+                            <!--end::Wrapper-->
+                            <!--begin::Line-->
+                            <div class="stepper-line h-40px"></div>
+                            <!--end::Line-->
+                        </div>
+                        <!--end::Step 4-->
+                        <!--begin::Step 5-->
+                        <div class="stepper-item mark-completed" data-kt-stepper-element="nav">
+                            <!--begin::Wrapper-->
+                            <div class="stepper-wrapper">
+                                <!--begin::Icon-->
+                                <div class="stepper-icon w-40px h-40px">
+                                    <i class="ki-outline ki-check fs-2 stepper-check"></i>
+                                    <span class="stepper-number">5</span>
+                                </div>
+                                <!--end::Icon-->
+                                <!--begin::Label-->
+                                <div class="stepper-label">
+                                    <a href="javascript:changeReportView('CommisionReport')">
+                                        <h3 class="stepper-title">
+                                            Commission Reports
+                                        </h3>
+                                        <div class="stepper-desc fw-semibold">
+                                            Sales by Rep
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card d-flex flex-row-fluid" id="HeliasDailyReport">
+                <div class="card-header card-header-stretch">
+                    <div class="card-title">
+                        <h3 class="m-0 text-gray-900">Helias Daily Report</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-7 pb-0 px-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                            <div class="card-px text-center my-10">
+                                <h2 class="fs-2x fw-bold mb-10">Download Daily Helias Sales Report</h2>
+                                <a href="/Home/DownloadReport?reportType=HeliasDailyReport" class="btn btn-primary">Download Daily Report</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card d-flex flex-row-fluid" id="TerritorySalesReport" style="display:none !important">
+                <div class="card-header card-header-stretch">
+                    <div class="card-title">
+                        <h3 class="m-0 text-gray-900">Territory Sales Report</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-7 pb-0 px-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                            <div class="card-px text-center my-10">
+                                <h2 class="fs-2x fw-bold mb-10">Download Territory Sales Report</h2>
+                                <a href="/Home/DownloadReport?reportType=Territory_International" class="btn btn-primary">Download International Report</a>
+                                <a href="/Home/DownloadReport?reportType=Territory_Report" class="btn btn-primary">Download Territory Report</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card d-flex flex-row-fluid" id="OyaAgingReport" style="display:none !important">
+                <div class="card-header card-header-stretch">
+                    <div class="card-title">
+                        <h3 class="m-0 text-gray-900">OYA Aging Report</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-7 pb-0 px-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                            <div class="card-px text-center my-10">
+                                <h2 class="fs-2x fw-bold mb-10">Download OYA AR Aging Report</h2>
+                                <a href="/Home/DownloadReport?reportType=AR_Aging_Detail_Oya" class="btn btn-primary">OYA Aging Detail Report</a>
+                                <a href="/Home/DownloadReport?reportType=AR_Aging_Summary_Oya" class="btn btn-primary">OYA Aging Summary Report</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card d-flex flex-row-fluid" id="PinoAgingReport" style="display:none !important">
+                <div class="card-header card-header-stretch">
+                    <div class="card-title">
+                        <h3 class="m-0 text-gray-900">Pino Aging Report</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-7 pb-0 px-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                            <div class="card-px text-center my-10">
+                                <h2 class="fs-2x fw-bold mb-10">Download Pino AR Aging Report</h2>
+                                <a href="/Home/DownloadReport?reportType=AR_Aging_Detail_Pino" class="btn btn-primary">Pino Aging Detail Report</a>
+                                <a href="/Home/DownloadReport?reportType=AR_Aging_Summary_Pino" class="btn btn-primary">Pino Aging Summary Report</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card d-flex flex-row-fluid" id="CommisionReport" style="display:none !important">
+                <div class="card-header card-header-stretch">
+                    <div class="card-title">
+                        <h3 class="m-0 text-gray-900">Commisson Report</h3>
+                    </div>
+                </div>
+                <div class="card-body pt-7 pb-0 px-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="kt_security_summary_tab_pane_hours" role="tabpanel">
+                            <div class="card-px text-center my-10">
+                                <h2 class="fs-2x fw-bold mb-10">Download Helias Commision Report</h2>
+                                @using (Html.BeginForm("DownloadReport", "Home", FormMethod.Post))
+                                {
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="fromDate">Start Date</label>
+                                            <input type="date" value="" id="fromDate" name="fromDate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="toDate">End Date</label>
+                                            <input type="date" value="" id="toDate" name="toDate" class="form-control" />
+                                        </div>
+                                        <div class="col-md-3">
+                                        </div>
+                                    </div>
+                                    <br />
+                                    foreach (var contrator in dataList)
+                                    {
+                                        <button value="CommissionReport_@contrator.Code" name="reportType" class="btn btn-primary">@contrator.Label - Report</button>
+                                    }
+                                }
+                                @*  @foreach (var contrator in dataList)
+                                {
+                                <a href="/Home/DownloadReport?reportType=CommissionReport_@contrator.Code" class="btn btn-primary">@contrator.Label - Report</a>
+                                } *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+     $("input[type=date]").datepicker({
+              dateFormat: 'mm/dd/yyyy',
+          onSelect: function(dateText, inst) {
+            $(inst).val(dateText); // Write the value in the input
+          }
+        });
+    });
+</script>

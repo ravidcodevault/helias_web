@@ -1,0 +1,32 @@
+OYA WEB APP - SERVER CREDENTIAL AND COOKIE FIX
+
+1. Stop the previous OYA web process before installing this version.
+2. Extract the ENTIRE ZIP into the destination folder. Keep your working server
+   appsettings.json (SQL connection string, report paths, and login settings).
+3. Start RUN-OYA.cmd. If PubNub__SecretKey is not already set for this process,
+   it loads the saved Windows-protected credential or prompts once for the
+   matching Secret Key. Input is hidden. No Secret Key is included in the ZIP.
+4. Keep using RUN-OYA.cmd for subsequent launches. It supplies the credential to
+   the website process. The website runs at http://localhost:5000.
+5. Log in again after this upgrade. Old cookie names are no longer reused.
+
+Persistent server files are outside the release folder:
+%LOCALAPPDATA%\OyaWebApplication\pubnub-secret.dpapi
+%LOCALAPPDATA%\OyaWebApplication\DataProtection-Keys
+
+Use the same Windows account on subsequent launches. Secret and cookie keys are
+protected for that account on that server. Do not copy them to another account
+or machine. If the keyset changes, ask the administrator to reset the saved
+credential and supply the matching new Secret Key.
+
+For IIS hosting, use the IIS process's protected secret/environment configuration;
+the console launcher is for direct EXE hosting, not an IIS application pool.
+If PowerShell scripts are disallowed by organisation policy, have the server
+administrator approve the launcher through the normal process. The launcher
+never changes or bypasses the PowerShell execution policy.
+
+The package includes the Windows x64 .NET runtime, DLLs, and wwwroot.
+The database fix remains a separate SQL deployment step:
+database\migrations\20261031_include_inactive_items_in_sales.sql
+Run it in the database actually used by the hosted app. See the included
+HISTORICAL_SALES_DEPLOYMENT.md. No production database changes were made here.
