@@ -1,0 +1,78 @@
+name: Publish frontend folders
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-helias_web
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'ravidcodevault/helias_web' && github.ref == 'refs/heads/main'
+    runs-on: windows-2022
+    timeout-minutes: 30
+    outputs:
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      artifact-digest: ${{ steps.upload.outputs.artifact-digest }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build publish package
+        shell: pwsh
+        run: ./deployment/Build-Package.ps1 -Kind web -OutputRoot "$env:RUNNER_TEMP/oya-build-$env:GITHUB_RUN_ID-$env:GITHUB_RUN_ATTEMPT"
+      - name: Upload verified publish package
+        id: upload
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: helias_web-publish
+          path: ${{ runner.temp }}/oya-build-${{ github.run_id }}-${{ github.run_attempt }}/package/*
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+  publish:
+    needs: build
+    if: github.repository == 'ravidcodevault/helias_web' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Windows, X64, oya-web-publish]
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      # PowerShell avoids a JavaScript action runtime dependency on Windows Server 2016.
+      - name: Verify artifact and create next inactive release folder
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ needs.build.outputs.artifact-id }}
+          ARTIFACT_DIGEST: ${{ needs.build.outputs.artifact-digest }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+          $directory = Join-Path $env:RUNNER_TEMP ('oya-package-'+$env:GITHUB_RUN_ID+'-'+$env:GITHUB_RUN_ATTEMPT)
+          New-Item -ItemType Directory -Path $directory -Force | Out-Null
+          $archive = Join-Path $directory 'artifact.zip'
+          $headers = @{ Authorization=('Bearer '+$env:GH_TOKEN); Accept='application/vnd.github+json'; 'X-GitHub-Api-Version'='2022-11-28' }
+          $uri = 'https://api.github.com/repos/'+$env:GITHUB_REPOSITORY+'/actions/artifacts/'+$env:ARTIFACT_ID+'/zip'
+          Invoke-WebRequest -Uri $uri -Headers $headers -OutFile $archive -UseBasicParsing
+          if ((Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash -ine $env:ARTIFACT_DIGEST) { throw 'GitHub artifact digest mismatch.' }
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $zip = [IO.Compression.ZipFile]::OpenRead($archive)
+          try {
+            foreach ($entry in $zip.Entries) {
+              $path = [IO.Path]::GetFullPath((Join-Path $directory $entry.FullName.Replace('/','\')))
+              if (-not $path.StartsWith($directory+'\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Unsafe artifact entry.' }
+            }
+          } finally { $zip.Dispose() }
+          Expand-Archive -LiteralPath $archive -DestinationPath (Join-Path $directory 'package')
+          & (Join-Path $directory 'package\Publish-Artifact.ps1') -Kind web -PublishRoot 'C:\Application'
