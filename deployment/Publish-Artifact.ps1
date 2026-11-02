@@ -41,6 +41,7 @@ foreach ($path in @($stage,$destination)) {
     if (-not [IO.Path]::GetFullPath($path).StartsWith($PublishRoot+'\',[StringComparison]::OrdinalIgnoreCase)) { throw 'Publish path escaped its root.' }
 }
 New-Item -ItemType Directory -Path $stage | Out-Null
+[IO.File]::SetAttributes($stage, ([IO.File]::GetAttributes($stage) -bor [IO.FileAttributes]::Hidden))
 # The publish account can create releases but cannot modify older application folders.
 $acl = Get-Acl -LiteralPath $stage
 $rule = New-Object Security.AccessControl.FileSystemAccessRule(
@@ -71,12 +72,45 @@ foreach ($file in $manifest) {
     if ($actual.Length -ne $file.Bytes -or (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash -ine $file.SHA256) { throw 'Published file verification failed.' }
 }
 if (-not (Test-Path -LiteralPath (Join-Path $stage $meta.RequiredExecutable))) { throw 'Required executable missing.' }
+if ($Kind -eq 'backend') {
+    # Private settings are read only on HeliasLLC, after the public artifact is verified.
+    $settingsFile = Join-Path $env:ProgramData 'OyaGitHubRunners\helias_backend\server-settings.json'
+    try {
+        $settings = Get-Content -LiteralPath $settingsFile -Raw | ConvertFrom-Json
+        if ([string]::IsNullOrWhiteSpace($settings.RuntimeConfigSource) -or [string]::IsNullOrWhiteSpace($settings.QuickBooksCompanyFile)) { throw 'Missing server settings.' }
+        [xml]$sourceConfig = Get-Content -LiteralPath $settings.RuntimeConfigSource -Raw
+        $targetConfigFile = Join-Path $stage 'QB_SQL_Sync.exe.config'
+        [xml]$targetConfig = Get-Content -LiteralPath $targetConfigFile -Raw
+        foreach ($sectionName in @('connectionStrings','appSettings')) {
+            $sourceSection = $sourceConfig.configuration.SelectSingleNode($sectionName)
+            if ($sourceSection) {
+                $copy = $targetConfig.ImportNode($sourceSection,$true)
+                $old = $targetConfig.configuration.SelectSingleNode($sectionName)
+                if ($old) { [void]$targetConfig.configuration.ReplaceChild($copy,$old) }
+                else { [void]$targetConfig.configuration.AppendChild($copy) }
+            }
+        }
+        $sql = $targetConfig.configuration.SelectSingleNode("connectionStrings/add[@name='MyConnectionString']")
+        if (-not $sql -or [string]::IsNullOrWhiteSpace($sql.connectionString)) { throw 'Missing runtime SQL configuration.' }
+        $company = $targetConfig.configuration.SelectSingleNode("appSettings/add[@key='QuickBooks.CompanyFile']")
+        if (-not $company) {
+            $company = $targetConfig.CreateElement('add')
+            $company.SetAttribute('key','QuickBooks.CompanyFile')
+            [void]$targetConfig.configuration.appSettings.AppendChild($company)
+        }
+        $company.SetAttribute('value',[string]$settings.QuickBooksCompanyFile)
+        $targetConfig.Save($targetConfigFile)
+        $meta | Add-Member -NotePropertyName RuntimeConfigSHA256 -NotePropertyValue ((Get-FileHash -LiteralPath $targetConfigFile -Algorithm SHA256).Hash)
+        $meta | Add-Member -NotePropertyName RuntimeSettingsConfigured -NotePropertyValue $true
+    } catch { throw 'Backend runtime settings could not be prepared. Check the private runner server-settings.json and source configuration locally; no secrets are logged.' }
+}
 $meta | Add-Member -NotePropertyName Version -NotePropertyValue $version
 $meta | Add-Member -NotePropertyName PublishedAtUtc -NotePropertyValue ([DateTime]::UtcNow.ToString('o'))
 $meta | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $stage '.oya-release.json') -Encoding UTF8
 if (Test-Path -LiteralPath $destination) { throw 'Release folder already exists.' }
 # Both absolute move paths were checked against the fixed publish root above.
 Move-Item -LiteralPath $stage -Destination $destination
+[IO.File]::SetAttributes($destination, ([IO.File]::GetAttributes($destination) -band (-bnot [IO.FileAttributes]::Hidden)))
 if ($env:GITHUB_OUTPUT) { "release-folder=$destination" | Add-Content -LiteralPath $env:GITHUB_OUTPUT }
 if ($env:GITHUB_STEP_SUMMARY) {
     "Published and verified: "+$destination+" (commit "+$meta.Commit+"). Live applications were not changed." | Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY

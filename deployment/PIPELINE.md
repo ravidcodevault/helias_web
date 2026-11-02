@@ -10,7 +10,7 @@ The pipeline never changes IIS, stops applications, launches QuickBooks, runs a 
 Use the folder shown in the Actions summary, or select the newest numbered folder on the destination server.
 Before manually activating a release, copy/configure the private runtime settings and external report paths on the server. Private settings and credentials are excluded from GitHub artifacts.
 Frontend Azure identity uses OYA_KEY_VAULT_URI plus DefaultAzureCredential; PubNub credentials also remain server-side.
-Backend QB_SQL_Sync.exe.config contains empty runtime values and generated assembly bindings; configure it from the existing server settings before running it.
+Backend artifacts contain empty runtime values. On HeliasLLC only, publishing merges the existing private SQL/app settings and the confirmed company path from C:\ProgramData\OyaGitHubRunners\helias_backend\server-settings.json, retaining the generated assembly bindings. No QuickBooks connection or sync is started by publishing.
 
 Only pushes to this repository's main branch and manual main-branch runs can use the publish runner. Pull requests never run on the destination.
 The older .disabled workflows are historical references and remain disabled.
