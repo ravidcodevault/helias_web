@@ -60,7 +60,8 @@ try {
     }
 } finally { $archive.Dispose() }
 Expand-Archive -LiteralPath $zip -DestinationPath $stage
-$manifest = @(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'manifest.json') -Raw | ConvertFrom-Json)
+$manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'manifest.json') -Raw | ConvertFrom-Json
+$manifest = @($manifest)
 $files = @(Get-ChildItem -LiteralPath $stage -Recurse -File -Force)
 if ($files.Count -ne $manifest.Count) { throw 'Published file count mismatch.' }
 foreach ($file in $manifest) {
